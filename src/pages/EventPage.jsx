@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { EventEditForm } from "./EventEditForm";
+import { CategoriesContext } from "../components/CategoriesContext";
 
 // Loader function to fetch and return event %user data
 export const loader = async ({ params }) => {

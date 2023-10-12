@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Heading,
   Button,
@@ -18,23 +18,18 @@ import { CategoriesContext } from "../components/CategoriesContext";
 export const EventsPage = () => {
   // Setting up stage to hold the fetched events and categories
   const [events, setEvents] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // Keep track of the search term
   const [filteredCategory, setFilteredCategory] = useState(""); // Keep track of the filtered category
 
-  // fetching the events and categories
+  // Get categories from the context
+  const { categories } = useContext(CategoriesContext);
+
+  // fetching the events
   useEffect(() => {
     async function fetchData() {
       const eventsResponse = await fetch("http://localhost:3000/events");
       const eventsData = await eventsResponse.json();
-
-      const categoriesResponse = await fetch(
-        "http://localhost:3000/categories"
-      );
-      const categoriesData = await categoriesResponse.json();
-
       setEvents(eventsData);
-      setCategories(categoriesData);
     }
 
     fetchData();
@@ -58,12 +53,14 @@ export const EventsPage = () => {
 
     return matchesSearchTerm && matchesCategory;
   });
+
   // Function to map category id to names
   const getCategoryNames = (categoryIds = []) => {
     if (!Array.isArray(categoryIds)) {
-      console.error("categoryIds is not an array:", categoryIds); // This will log unexpected values
+      console.error("categoryIds is not an array:", categoryIds);
       return "";
     }
+
     return categoryIds
       .map((id) => {
         const category = categories.find((cat) => cat.id === id);
@@ -84,6 +81,7 @@ export const EventsPage = () => {
   return (
     <Box p={5}>
       <Heading mb={4}>List of events</Heading>
+
       {/* Search field and Filter by Categories */}
       <Flex justifyContent="start" alignItems="center" mb={5}>
         {/* Search field */}
