@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useContext } from "react";
 import {
   Heading,
   Box,
@@ -18,7 +18,8 @@ import {
 } from "@chakra-ui/react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { EventEditForm } from "./EventEditForm";
-import { CategoriesContext } from "../components/CategoriesContext";
+import { CategoriesContext } from "../contexts/CategoriesContext";
+import { EventsContext } from "../contexts/EventsContext";
 
 // Loader function to fetch and return event %user data
 export const loader = async ({ params }) => {
@@ -44,7 +45,11 @@ export const loader = async ({ params }) => {
 };
 
 export const EventPage = () => {
-  const { event: initialEvent, users, categories } = useLoaderData();
+  const { event: initialEvent, users } = useLoaderData();
+
+  // Get categories from the context
+  const { categories } = useContext(CategoriesContext);
+
   const [event, setEvent] = useState(initialEvent);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
