@@ -6,7 +6,8 @@ import { EventsPage } from "./pages/EventsPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Root } from "./components/Root";
 import { NewEvent, action as newEventAction } from "./pages/NewEvent";
-import { CategoriesProvider } from "./components/CategoriesContext";
+import { CategoriesProvider } from "./contexts/CategoriesContext";
+import { UsersProvider } from "./contexts/UsersContext";
 
 const router = createBrowserRouter([
   {
@@ -35,7 +36,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ChakraProvider>
       <CategoriesProvider>
-        <RouterProvider router={router} />
+        <UsersProvider>
+          <RouterProvider router={router} />
+        </UsersProvider>
       </CategoriesProvider>
     </ChakraProvider>
   </React.StrictMode>

@@ -19,9 +19,9 @@ import {
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { EventEditForm } from "./EventEditForm";
 import { CategoriesContext } from "../contexts/CategoriesContext";
-import { EventsContext } from "../contexts/EventsContext";
+import { UsersContext } from "../contexts/UsersContext";
 
-// Loader function to fetch and return event %user data
+// Loader function to fetch and return event & user data
 export const loader = async ({ params }) => {
   //  Fetch the events
   const eventResponse = await fetch(
@@ -29,26 +29,19 @@ export const loader = async ({ params }) => {
   );
   const event = await eventResponse.json();
 
-  // Fetch the categories
-  const categoriesResponse = await fetch("http://localhost:3000/categories");
-  const categories = await categoriesResponse.json();
-
-  //  Fetch the users
-  const usersResponse = await fetch("http://localhost:3000/users/");
-  const users = await usersResponse.json();
-
   return {
     event,
-    categories,
-    users,
   };
 };
 
 export const EventPage = () => {
-  const { event: initialEvent, users } = useLoaderData();
+  const { event: initialEvent } = useLoaderData();
 
   // Get categories from the context
   const { categories } = useContext(CategoriesContext);
+
+  //  Get users form the context
+  const { users } = useContext(UsersContext);
 
   const [event, setEvent] = useState(initialEvent);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -74,7 +67,9 @@ export const EventPage = () => {
 
   const createdByUser = users.find((user) => user.id === event.createdBy);
 
-  const categoriesForEvent = (event.categoryIds || [])
+  const categoriesForEvent = (
+    Array.isArray(event.categoryIds) ? event.categoryIds : []
+  )
     .map((categoryId) => {
       const foundCategory = categories.find(
         (category) => category.id === categoryId
@@ -183,7 +178,7 @@ export const EventPage = () => {
           alignSelf="flex-end"
           size="sm"
         >
-          Edit Event
+          Edit/ Delete Event
         </Button>
 
         {/* Modal for editing event */}

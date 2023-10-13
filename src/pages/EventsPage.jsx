@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { CategoriesContext } from "../components/CategoriesContext";
+import { CategoriesContext } from "../contexts/CategoriesContext";
 
 export const EventsPage = () => {
   // Setting up stage to hold the fetched events and categories
@@ -29,6 +29,7 @@ export const EventsPage = () => {
     async function fetchData() {
       const eventsResponse = await fetch("http://localhost:3000/events");
       const eventsData = await eventsResponse.json();
+
       setEvents(eventsData);
     }
 
@@ -99,7 +100,7 @@ export const EventsPage = () => {
           width="25%"
           value={filteredCategory}
           onChange={handleCategoryChange}
-          mr={2} // Added margin right for spacing
+          mr={2}
         >
           <option value="">Filter by Categories</option>
           {categories.map((category) => (

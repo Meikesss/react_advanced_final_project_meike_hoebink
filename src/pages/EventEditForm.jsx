@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
   FormControl,
   FormLabel,
@@ -9,6 +9,8 @@ import {
   Select,
   Textarea,
 } from "@chakra-ui/react";
+import { CategoriesContext } from "../contexts/CategoriesContext";
+import { UsersContext } from "../contexts/UsersContext";
 
 export const EventEditForm = ({
   event,
@@ -17,6 +19,10 @@ export const EventEditForm = ({
   setEvent,
   deleteEvent,
 }) => {
+  // Get categories & users from the context
+  const { categories } = useContext(CategoriesContext);
+  const { users } = useContext(UsersContext);
+
   //   setting the states
   const [formData, setFormData] = useState({
     ...event,
@@ -25,29 +31,6 @@ export const EventEditForm = ({
       ? event.categoryIds
       : [event.categoryIds],
   });
-
-  const [users, setUsers] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  //   fetch the users
-  useEffect(() => {
-    async function fetchUsers() {
-      const response = await fetch("http://localhost:3000/users");
-      const data = await response.json();
-      setUsers(data);
-    }
-    fetchUsers();
-  }, []);
-
-  //    fetch the categories
-  useEffect(() => {
-    async function fetchCategories() {
-      const response = await fetch("http://localhost:3000/categories");
-      const data = await response.json();
-      setCategories(data);
-    }
-    fetchCategories();
-  }, []);
 
   //   Function to handle changes in the input fields
   const handleInputChange = (e) => {

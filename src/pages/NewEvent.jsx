@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { Form, redirect } from "react-router-dom";
 import {
   Flex,
@@ -11,14 +11,19 @@ import {
   Select,
   Button,
 } from "@chakra-ui/react";
+import { CategoriesContext } from "../contexts/CategoriesContext";
+import { UsersContext } from "../contexts/UsersContext";
 
 export const action = async ({ request }) => {
   const formData = Object.fromEntries(await request.formData());
-  //
 
   // Ensure that startTime and endTime have the correct format
   formData.startTime += ":00.000Z";
   formData.endTime += ":00.000Z";
+
+  // Convert categoryIds and createdBy from string to number
+  formData.categoryIds = Number(formData.categoryIds);
+  formData.createdBy = Number(formData.createdBy);
 
   // Save the event
   const newId = await fetch("http://localhost:3000/events", {
@@ -33,31 +38,11 @@ export const action = async ({ request }) => {
 };
 
 export const NewEvent = () => {
-  const [categories, setCategories] = useState([]);
-  const [users, setUsers] = useState([]);
-
-  // Fetches and sets the categories from the server
-  useEffect(() => {
-    async function fetchCategories() {
-      const response = await fetch("http://localhost:3000/categories");
-      const data = await response.json();
-      setCategories(data); // Setting the categories state
-    }
-
-    fetchCategories();
-  }, []);
-
-  // Fetches and sets the users from the server. The assignment did not specify to add a new user.
-  // Because I;m on a tight deadline, I decided to do this one the same as the categories,
-  // so only fetching existing users.
-  useEffect(() => {
-    async function fetchUsers() {
-      const response = await fetch("http://localhost:3000/users");
-      const data = await response.json();
-      setUsers(data); // Setting the users state
-    }
-    fetchUsers();
-  }, []);
+  // Get categories & users from the context.
+  // The assignment did not specify to add a new user.
+  // Because I'm on a tight deadline, I decided to do keep this one simple and not add new users.
+  const { categories } = useContext(CategoriesContext);
+  const { users } = useContext(UsersContext);
 
   return (
     <Flex width="100vw" alignItems="center" justifyContent="center" mt={20}>
@@ -131,10 +116,10 @@ export const NewEvent = () => {
               />
             </FormControl>
 
-            <FormControl id="category">
+            <FormControl id="categoryIds">
               <FormLabel>Category</FormLabel>
               <Select
-                name="category"
+                name="categoryIds"
                 aria-label="Category"
                 width="100%"
                 required
